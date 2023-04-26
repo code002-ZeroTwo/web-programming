@@ -1,6 +1,5 @@
-# web-programming
-##practice web programming
+# web-programming with django and javascript
 
-### this is web application developed using django and javascript 
-### progress is on going 
-### further details on completion of project
+ 
+#### progress is on going 
+#### further details on completion of project
