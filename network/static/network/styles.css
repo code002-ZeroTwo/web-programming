@@ -1,0 +1,33 @@
+.post_container{
+    display: block;
+    padding: 20px;
+    border: 1px solid black;
+    margin: 10px;
+    width: 50%;
+}
+
+.post_content{
+    font-size: medium;
+    font-weight: bold;
+    display: block;
+}
+
+.extra_post_content{
+    display: inline;
+    font-size: small;
+    justify-content: space-between;
+}
+
+.like{
+    display: block;
+    font-size: medium;
+}
+
+.post_username {
+    display: inline;
+    padding-right: 30px;
+}
+
+.button{
+    
+}

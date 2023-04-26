@@ -1,0 +1,24 @@
+{% extends "network/layout.html" %} 
+{% block body %}
+<div id="index">
+  <h1>post</h1>
+  <form action="{% url 'index' %}" method="post">
+    {% csrf_token %}
+    <input type="text" id="post" placeholder="what's new?" />
+    <button type="submit" id="post_form">Post</button>
+  </form>
+</div>
+<div id="profile_info"></div>
+<div id="allposts_view"></div>
+<div id="ffcontainer"></div>
+<div id="following_posts"></div>
+<div id="edit_post">
+  <h1>Edit Post</h1>
+  <form action="{% url 'all_post' %}" method="post">
+    {% csrf_token %}
+    <textarea name="edit_post" id="tedit_post" cols="30" rows="10"></textarea>
+    <button type="submit" id="edit">Edit</button>
+  </form>
+</div>
+
+{% endblock %}
