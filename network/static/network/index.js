@@ -134,8 +134,7 @@ const show_posts = (result, event) => {
     edit.innerHTML = "edit this post";
     created_at.innerHTML = post.created_at;
     created_by.innerHTML = post.created_by;
-    like.innerHTML = post.like_count;
-    liked_status = false;
+    like.innerHTML = "0";
     like_text.innerHTML = "like";
 
     // append all these content to a subcontainer
@@ -212,24 +211,28 @@ const show_posts = (result, event) => {
     visit_profile(created_by);
 
     // add event listener to like
+    
+    let liked_status = false;
     like_text.addEventListener("click", () => {
-      if (liked_status == false) {
-        to_send = parseInt(like.innerHTML) + 1;
-        like_text.innerHTML = "unlike";
-        liked_status = true;
-      } else {
-        to_send = parseInt(like.innerHTML) - 1;
+      if (like_text.innerHTML == "like"){
         liked_status = false;
+        like_text.innerHTML = "unlike";
+      }
+      else{
+        liked_status = true;
         like_text.innerHTML = "like";
       }
-      fetch(`/handle/${pid}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ like_count: to_send }),
-      });
-    });
+
+      fetch(`handle/${pid}`,{
+        method : "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({"liked_status" : liked_status}),
+      })
+      .then(response => response.json())
+      .then(result => console.log(result));
+
+    })
+    
   }
 };
 

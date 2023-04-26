@@ -7,10 +7,8 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.core import serializers
 
-from .models import User,Post,FollowModel
-from .forms import PostForm
+from .models import User,Post,FollowModel,Liked
 
 
 def index(request):
@@ -107,16 +105,32 @@ def all_post(request):
         return JsonResponse({"posts": serialized_posts})
     return JsonResponse({"message": "get request required. "},status=400)
 
+# this function return response with help of liked model
+# on clicking like first time this function should create a object of like model
+# on clicking like second time this function should delete a object of like model
 @login_required
 @csrf_exempt
 def likes(request,id):
-    if request.method != "PUT":
-        return JsonResponse({"error":"put response required"},status=400)
+    if request.method != "POST":
+        return JsonResponse({"error":"post or put response required"},status=400)
     
-    post = Post.objects.get(id = id)
-    like = json.loads(request.body)
-    post.like_count = like["like_count"]
-    post.save()
+    # get the liked status
+    json_body = json.loads(request.body)
+    liked_status = json_body.get("liked_status")
+
+    # get the post with its id
+    liked_post = Post.objects.get(id = id)
+    # if user is clicking to like the post
+    if liked_status == False:
+        like_object = Liked(
+            liked_by = request.user,
+            liked_on = liked_post
+        )
+        like_object.save()
+    
+    else:
+        to_delete_like_object = get_object_or_404(Liked, liked_by = request.user , liked_on = liked_post)
+        to_delete_like_object.delete()
 
     return JsonResponse({"message": "like updated sucessfully"},status=201)
 
