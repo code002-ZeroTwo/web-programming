@@ -1,4 +1,4 @@
-.post_container{
+/*.post_container{
     display: block;
     padding: 20px;
     border: 1px solid black;
@@ -30,4 +30,194 @@
 
 .button{
     
+}
+*/
+/* Set up basic styling */
+
+body {
+  font-family: sans-serif;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #0066cc;
+  color: #fff;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+button:hover {
+  background-color: #004499;
+}
+
+/* Style the header */
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #eee;
+  padding: 20px;
+}
+
+header h1 {
+  font-size: 24px;
+}
+
+header nav a {
+  margin-left: 20px;
+}
+
+/* Style the main content */
+
+main {
+  display: flex;
+  justify-content: space-between;
+}
+
+#profile_info {
+  width: 30%;
+}
+
+.post_container {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.post_content {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.post_username {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.extra_post_content {
+  font-size: 14px;
+  color: #888;
+}
+
+.like {
+  display: inline-block;
+  margin-right: 10px;
+  font-size: 14px;
+  color: #888;
+}
+
+.like:hover {
+  color: #0066cc;
+  cursor: pointer;
+}
+
+/* Style the sidebar */
+
+aside {
+  width: 25%;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+/* Style the following/followers section */
+
+#ffcontainer {
+  display: flex;
+}
+
+#ffcontainer div {
+  width: 50%;
+}
+
+#ffcontainer h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+#ffcontainer p {
+  margin-bottom: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#ffcontainer p:hover {
+  color: #0066cc;
+}
+
+/* Style the footer */
+
+footer {
+  background-color: #eee;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Styling for the post form */
+#post_form {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+#post_form:hover {
+  background-color: #3e8e41;
+}
+
+#post {
+  width: 70%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  resize: none;
+}
+
+/* Styling for the edit form */
+#edit {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 10%;
+}
+
+#edit:hover {
+  background-color: #3e8e41;
+}
+
+#tedit_post {
+  width: 60%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  resize: none;
 }

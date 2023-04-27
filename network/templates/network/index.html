@@ -16,7 +16,7 @@
   <h1>Edit Post</h1>
   <form action="{% url 'all_post' %}" method="post">
     {% csrf_token %}
-    <textarea name="edit_post" id="tedit_post" cols="30" rows="10"></textarea>
+    <textarea name="edit_post" id="tedit_post" cols="30" rows="5"></textarea><br>
     <button type="submit" id="edit">Edit</button>
   </form>
 </div>
