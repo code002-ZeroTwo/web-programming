@@ -28,8 +28,8 @@ class Liked(models.Model):
     def serialize(self):
         return {
             "id":self.id,
-            "liked_by":self.liked_by,
-            "liked_on":self.liked_on,
+            "liked_by":self.liked_by.username,
+            "liked_on":self.liked_on.id,
         }
 
 

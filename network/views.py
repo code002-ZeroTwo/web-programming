@@ -100,7 +100,17 @@ def handle_post(request):
 @login_required
 def all_post(request):
     posts = Post.objects.all()
-    serialized_posts = [post.serialize() for post in posts]
+
+    serialized_posts = []
+    for post in posts:
+        likes_on_post = Liked.objects.filter(liked_on = post)
+        serialized_likes_on_post = [likes.serialize() for likes in likes_on_post]
+
+        # serialize each post instead of serializing every of them in single line
+        serialized_posts.append({"post": post.serialize(), "likes":serialized_likes_on_post})
+
+    #serialized_posts = [post.serialize() for post in posts]
+
     if request.method == "GET":
         return JsonResponse({"posts": serialized_posts})
     return JsonResponse({"message": "get request required. "},status=400)
@@ -111,28 +121,28 @@ def all_post(request):
 @login_required
 @csrf_exempt
 def likes(request,id):
-    if request.method != "POST":
-        return JsonResponse({"error":"post or put response required"},status=400)
-    
     # get the liked status
-    json_body = json.loads(request.body)
-    liked_status = json_body.get("liked_status")
+    if request.method == "POST":
+        json_body = json.loads(request.body)
+        liked_status = json_body.get("liked_status")
 
-    # get the post with its id
-    liked_post = Post.objects.get(id = id)
-    # if user is clicking to like the post
-    if liked_status == False:
-        like_object = Liked(
-            liked_by = request.user,
-            liked_on = liked_post
-        )
-        like_object.save()
-    
-    else:
-        to_delete_like_object = get_object_or_404(Liked, liked_by = request.user , liked_on = liked_post)
-        to_delete_like_object.delete()
+        # get the post with its id
+        liked_post = Post.objects.get(id = id)
+        # if user is clicking to like the post
+        if liked_status == False:
+            like_object = Liked(
+                liked_by = request.user,
+                liked_on = liked_post
+            )
+            like_object.save()
+        
+        else:
+            to_delete_like_object = get_object_or_404(Liked, liked_by = request.user , liked_on = liked_post)
+            to_delete_like_object.delete()
 
-    return JsonResponse({"message": "like updated sucessfully"},status=201)
+        return JsonResponse({"message": "like updated sucessfully"},status=201)
+
+    return JsonResponse({"error": "get or post method required"},status = 401)
 
 
 @login_required
@@ -148,7 +158,14 @@ def profile(request, username = None):
         user = User.objects.get(username = username)
 
     posts = Post.objects.filter(created_by = user)
-    serialized_posts = [post.serialize() for post in posts]
+    serialized_posts = []
+    for post in posts:
+        likes_on_post = Liked.objects.filter(liked_on = post)
+        serialized_likes_on_post = [likes.serialize() for likes in likes_on_post]
+
+        # serialize each post instead of serializing every of them in single line
+        serialized_posts.append({"post": post.serialize(), "likes":serialized_likes_on_post})
+
     followings = FollowModel.objects.filter(followed_by = user).distinct()
     followers = FollowModel.objects.filter(followed_to = user).distinct()
 

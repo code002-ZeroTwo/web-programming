@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#edit_post").style.display = "none";
 });
 
-
 const profile = (event) => {
   // stop the propagation of click event
   event.stopPropagation();
@@ -24,9 +23,9 @@ const profile = (event) => {
   fetch("/profile/")
     .then((response) => response.json())
     .then((result) => {
+      console.log(result);
       show_posts(result, event);
       show_following(result, event);
-      console.log(result);
     })
     .catch((error) => console.log(error));
 };
@@ -118,7 +117,8 @@ const show_posts = (result, event) => {
   supercontainer.innerHTML = "";
   // create a multiple container that contains each post and its info
 
-  for (let post of result.posts) {
+  for (let obj of result.posts) {
+    get_post = obj.post;
     // create a single container for each post
     let subcontainer = document.createElement("div");
     let content = document.createElement("p");
@@ -127,16 +127,22 @@ const show_posts = (result, event) => {
     let like = document.createElement("div");
     let like_text = document.createElement("div");
     let edit = document.createElement("div");
-    let pid = post.id;
+    let pid = get_post.id;
 
     // add content to created element
-    content.innerHTML = post.post;
+    content.innerHTML = get_post.post;
     edit.innerHTML = "edit this post";
-    created_at.innerHTML = post.created_at;
-    created_by.innerHTML = post.created_by;
-    like.innerHTML = "0";
-    like_text.innerHTML = "like";
+    created_at.innerHTML = get_post.created_at;
+    created_by.innerHTML = get_post.created_by;
 
+    // innertext of like shoud be equal to length of likes array in result.post
+  
+    
+    get_likes = obj.likes.length;
+    console.log(get_likes.length);
+    like.innerHTML = get_likes;
+    
+    like_text.innerHTML = "";
     // append all these content to a subcontainer
 
     subcontainer.appendChild(content);
@@ -163,9 +169,10 @@ const show_posts = (result, event) => {
 
     // get logged in user
     let logged_in;
-    fetch("/profile/")
+    fetch("profile/")
       .then((response) => response.json())
       .then((result) => {
+        console.log(result.logged_in);
         logged_in = result.logged_in;
       });
 
@@ -192,12 +199,15 @@ const show_posts = (result, event) => {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ "post_content": new_content, "prev_content": content.innerHTML }),
+            body: JSON.stringify({
+              post_content: new_content,
+              prev_content: content.innerHTML,
+            }),
           })
             .then((response) => response.json())
             .then((data) => console.log(data))
             .catch((error) => console.error(error));
-          
+
           document.querySelector("#index").style.display = "block";
           document.querySelector("#edit_post").style.display = "none";
         });
@@ -206,33 +216,47 @@ const show_posts = (result, event) => {
       }
     });
 
-
     // add event listener to created_by
     visit_profile(created_by);
 
-    // add event listener to like
-    
-    let liked_status = false;
-    like_text.addEventListener("click", () => {
-      if (like_text.innerHTML == "like"){
-        liked_status = false;
-        like_text.innerHTML = "unlike";
-      }
-      else{
+    // update liked_status accordingly using data from server
+    let liked_user = [];
+    console.log(obj.likes);
+    for (let likes of obj.likes) {
+      liked_user.push(likes.liked_by);
+    }
+    console.log(liked_user);
+    setTimeout(() => {
+      if (liked_user.includes(logged_in)) {
+        console.log("liked sttus true");
         liked_status = true;
+        like_text.innerHTML = "unlike";
+      } else {
+        liked_status = false;
         like_text.innerHTML = "like";
+        console.log("liked sttus false");
+        console.log(logged_in);
+      }
+    }, 200);
+
+    // add event listener to like
+    like_text.addEventListener("click", () => {
+      if (liked_status == true) {
+        like_text.innerHTML = "unlike";
+        liked_status = false;
+      } else {
+        like_text.innerHTML = "like";
+        liked_status = true;
       }
 
-      fetch(`handle/${pid}`,{
-        method : "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({"liked_status" : liked_status}),
+      fetch(`handle/${pid}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ liked_status: liked_status }),
       })
-      .then(response => response.json())
-      .then(result => console.log(result));
-
-    })
-    
+        .then((response) => response.json())
+        .then((result) => console.log(result));
+    });
   }
 };
 
@@ -372,13 +396,14 @@ const return_from_followed = (event) => {
     fetch("handle/allposts")
       .then((response) => response.json())
       .then((results) => {
+        console.log(results);
         for (let post of results.posts) {
-          if (followings_array.includes(post.created_by)) {
+          if (followings_array.includes(post.post.created_by)) {
             new_posts.push(post);
           }
         }
         return { posts: new_posts };
       })
-      .then((result) => show_posts(result, event));
+      .then((result) => {show_posts(result, event)});
   }, 500);
 };
