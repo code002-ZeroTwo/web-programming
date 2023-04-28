@@ -53,7 +53,7 @@ const show_following = (result, event) => {
 
   // create a following and followers div
   let following_follower_container = document.querySelector("#ffcontainer");
-
+  following_follower_container.style.display = "block";
   // hide other containers
   document.querySelector("#following_posts").style.display = "none";
   document.querySelector("#profile_info").style.display = "none";
@@ -136,12 +136,11 @@ const show_posts = (result, event) => {
     created_by.innerHTML = get_post.created_by;
 
     // innertext of like shoud be equal to length of likes array in result.post
-  
-    
+
     get_likes = obj.likes.length;
     console.log(get_likes.length);
     like.innerHTML = get_likes;
-    
+
     like_text.innerHTML = "";
     // append all these content to a subcontainer
 
@@ -217,7 +216,17 @@ const show_posts = (result, event) => {
     });
 
     // add event listener to created_by
-    visit_profile(created_by);
+    //visit_profile(created_by);
+    created_by.addEventListener("click", (event) => {
+      event.stopPropagation();
+      fetch(`/profile/${created_by.innerHTML}`)
+        .then((response) => response.json())
+        .then((result) => {
+          show_info(result, created_by.innerHTML, event);
+          show_posts(result, event);
+          show_following(result, event);
+        });
+    });
 
     // update liked_status accordingly using data from server
     let liked_user = [];
@@ -258,25 +267,6 @@ const show_posts = (result, event) => {
         .then((result) => console.log(result));
     });
   }
-};
-
-// function to handle click on username
-
-const visit_profile = (created_by) => {
-  // show info of user whose username is created by
-
-  document.querySelector("#profile_info").style.display = "block";
-  document.querySelector("#allposts_view").style.display = "block";
-
-  created_by.addEventListener("click", (event) => {
-    fetch(`/profile/${created_by.innerHTML}`)
-      .then((response) => response.json())
-      .then((result) => {
-        show_info(result, created_by.innerHTML, event);
-        show_posts(result, event);
-        show_following(result, event);
-      });
-  });
 };
 
 // show basic information of user in profile
@@ -367,10 +357,13 @@ const returnposts = (event) => {
 // return posts followed posts
 const return_from_followed = (event) => {
   event.preventDefault();
+  event.stopPropagation();
 
   // remove all the other block and show only following posts
   document.querySelector("#profile_info").style.display = "none";
   document.querySelector("#ffcontainer").style.display = "none";
+
+  document.querySelector("#profile_info").innerHTML = "";
 
   document.querySelector("#allposts_view").style.display = "block";
 
@@ -404,6 +397,7 @@ const return_from_followed = (event) => {
         }
         return { posts: new_posts };
       })
-      .then((result) => {show_posts(result, event)});
+      // while runninng this show_posts function profile_info display might be equal to block
+      .then((result) => show_posts(result, event));
   }, 500);
 };
