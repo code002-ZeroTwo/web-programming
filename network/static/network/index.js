@@ -269,6 +269,26 @@ const show_posts = (result, event) => {
   }
 };
 
+// function to handle click on username
+
+const visit_profile = (created_by) => {
+  // show info of user whose username is created by
+
+  // this is the reason why that info sectiion was showing in following and all posts section
+  document.querySelector("#profile_info").style.display = "block";
+  document.querySelector("#allposts_view").style.display = "block";
+
+  created_by.addEventListener("click", (event) => {
+    fetch(`/profile/${created_by.innerHTML}`)
+      .then((response) => response.json())
+      .then((result) => {
+        show_info(result, created_by.innerHTML, event);
+        show_posts(result, event);
+        show_following(result, event);
+      });
+  });
+};
+
 // show basic information of user in profile
 
 const show_info = (result, username, event) => {
