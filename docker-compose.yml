@@ -3,9 +3,9 @@
   # different service to be part of application where each service can be a docker container 
   # based on different docker image
   services:
-    db:
+    # db:
         ## other have written how to start up postgres container
-        image: postgres
+        # image: postgres
       
     web: 
         # this is going to be based on docker file of my current dir
