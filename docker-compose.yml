@@ -1,0 +1,16 @@
+  version: '3' # version 3 of docker compose
+
+  # different service to be part of application where each service can be a docker container 
+  # based on different docker image
+  services:
+    db:
+        ## other have written how to start up postgres container
+        image: postgres
+      
+    web: 
+        # this is going to be based on docker file of my current dir
+        build: .
+        volumes: 
+          - .:/usr/src/app
+        ports:
+          - "8000:8000"
