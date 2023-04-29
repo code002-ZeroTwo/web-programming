@@ -129,7 +129,7 @@ def likes(request,id):
         # get the post with its id
         liked_post = Post.objects.get(id = id)
         # if user is clicking to like the post
-        if liked_status == False:
+        if liked_status == "unlike":
             like_object = Liked(
                 liked_by = request.user,
                 liked_on = liked_post

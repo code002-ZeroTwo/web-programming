@@ -99,12 +99,18 @@ const show_following = (result, event) => {
   following_follower_container.appendChild(followers);
 };
 
-const show_posts = (result, event) => {
+// get logged_in
+const get_logged_in = async () => {
+  let logged_in;
+  const response = await fetch("profile/");
+  const result = await response.json();
+  logged_in = await result.logged_in;
+  return logged_in;
+};
+
+const show_posts = async (result, event) => {
   // stop click event to affect other event
   event.stopPropagation();
-
-  // log result
-  console.log(result);
 
   // remove the create post form from view
   document.querySelector("#index").style.display = "none";
@@ -138,10 +144,8 @@ const show_posts = (result, event) => {
     // innertext of like shoud be equal to length of likes array in result.post
 
     get_likes = obj.likes.length;
-    console.log(get_likes.length);
     like.innerHTML = get_likes;
 
-    like_text.innerHTML = "";
     // append all these content to a subcontainer
 
     subcontainer.appendChild(content);
@@ -168,12 +172,8 @@ const show_posts = (result, event) => {
 
     // get logged in user
     let logged_in;
-    fetch("profile/")
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result.logged_in);
-        logged_in = result.logged_in;
-      });
+    logged_in = await get_logged_in();
+    console.log(logged_in);
 
     // edit the post only if created_by is logged in user
     edit.addEventListener("click", () => {
@@ -230,38 +230,36 @@ const show_posts = (result, event) => {
 
     // update liked_status accordingly using data from server
     let liked_user = [];
-    console.log(obj.likes);
     for (let likes of obj.likes) {
       liked_user.push(likes.liked_by);
     }
-    console.log(liked_user);
-    setTimeout(() => {
-      if (liked_user.includes(logged_in)) {
-        console.log("liked sttus true");
-        liked_status = true;
-        like_text.innerHTML = "unlike";
-      } else {
-        liked_status = false;
-        like_text.innerHTML = "like";
-        console.log("liked sttus false");
-        console.log(logged_in);
-      }
-    }, 600);
+    if (liked_user.includes(logged_in)) {
+      console.log("liked status true");
+      like_text.innerHTML = "unlike";
+    } else {
+      like_text.innerHTML = "like";
+      console.log("liked status false");
+    }
 
     // add event listener to like
     like_text.addEventListener("click", () => {
-      if (liked_status == true) {
-        like_text.innerHTML = "unlike";
-        liked_status = false;
-      } else {
+      if (like_text.innerHTML == "unlike") {
         like_text.innerHTML = "like";
-        liked_status = true;
+        // increase or decrease the count of like
+        if(parseInt(like.innerHTML) > 0){
+          like.innerHTML = parseInt(like.innerHTML) -1;
+        }
+        else{
+          like.innerHTML = 0;
+        }
+      } else if(like_text.innerHTML == "like"){
+        like_text.innerHTML = "unlike";
+        like.innerHTML = parseInt(like.innerHTML) + 1; 
       }
-
       fetch(`handle/${pid}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ liked_status: liked_status }),
+        body: JSON.stringify({ liked_status: like_text.innerHTML }),
       })
         .then((response) => response.json())
         .then((result) => console.log(result));
@@ -340,7 +338,6 @@ const show_info = (result, username, event) => {
         follow = false;
         button.innerText = "follow";
       }
-      console.log("button clicked");
       fetch(`/follow_or_unfollow`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
