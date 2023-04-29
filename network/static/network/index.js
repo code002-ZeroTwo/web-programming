@@ -246,7 +246,7 @@ const show_posts = (result, event) => {
         console.log("liked sttus false");
         console.log(logged_in);
       }
-    }, 200);
+    }, 600);
 
     // add event listener to like
     like_text.addEventListener("click", () => {
