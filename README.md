@@ -29,6 +29,17 @@ This app was built using the following technologies:
 8. Access the app at http://localhost:8000/
 9. visit the admin panel at http://localhost:8000/admin
 
+## you can also run the application by using docker
+## Prerequisites
+- To run this project using Docker, you will need to have Docker installed on your machine. You can download Docker [here](https://www.docker.com/get-started/).
+
+## Using docker-compose
+- you can use docker-compose to build and run the application. To do so, follow these steps:
+    - Change into the project directory:
+        ```cd my-django-project```
+    - Run the docker-compose command:
+        ```docker-compose up```
+
 ## Usage
 1. Create an account by clicking on the "Sign up" link on the homepage.
 2. Log in using your username and password.
